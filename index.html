@@ -576,7 +576,7 @@
   .mp-volume.is-muted .mp-vol-off { display: block; }
 
   /* ───── PHONE (< 640px): stacked, letter as centered modal ───── */
-  @media (max-width: 639px) {
+  @media (max-width: 1023px) {
     .bouquet { width: clamp(360px, 98vw, 580px); }
     .side {
       left: 50%;
@@ -605,7 +605,7 @@
   }
 
   /* ───── TABLET (640–1023px): two-column — letter LEFT, bouquet RIGHT ───── */
-  @media (min-width: 640px) and (max-width: 1023px) {
+  @media (min-width: 1024px) and (max-width: 1439px) {
     .stage {
       right: 4vw;
       left: auto;
@@ -645,19 +645,6 @@
     .cat { width: clamp(90px, 18vw, 130px); }
   }
 
-  /* ───── SMALL DESKTOP / LAPTOP (1024–1439px): letter at the left edge ───── */
-  @media (min-width: 1024px) and (max-width: 1439px) {
-    .letter {
-      right: auto;
-      left: 2vw;
-      top: 50%;
-      bottom: auto;
-      transform: translateY(-50%) rotate(-2deg) scale(0.96);
-      width: clamp(260px, 30vw, 340px);
-    }
-    .letter.is-visible { transform: translateY(-50%) rotate(-2deg) scale(1); }
-  }
-</style>
 </head>
 <body>
   <div class="hearts-layer" id="hearts" aria-hidden="true"></div>
