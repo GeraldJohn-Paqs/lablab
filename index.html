@@ -824,22 +824,22 @@
         // First line fades in shortly after click, second line 2s later
         setTimeout(function () { msg1.classList.add('is-visible'); }, 450);
         setTimeout(function () { msg2.classList.add('is-visible'); }, 450 + 2000);
-        // Bouquet pops in after the message lands, and the original text fades away
+        // Bouquet pops in 5 seconds after "...so I brought you here instead" lands
         setTimeout(function () {
           stage.classList.add('is-popped');
           stage.style.pointerEvents = 'auto';
           content.classList.add('is-removed');
           // Petal burst from the center of the viewport (where the bouquet is)
           spawnPetalBurst(window.innerWidth / 2, window.innerHeight / 2);
-        }, 450 + 2000 + 700);
+        }, 450 + 2000 + 5000);
         // Floating note joins after the pop
-        setTimeout(function () { floater.classList.add('is-floating'); }, 450 + 2000 + 700 + 380);
+        setTimeout(function () { floater.classList.add('is-floating'); }, 450 + 2000 + 5000 + 380);
         // Cute cat pops in below the text
-        setTimeout(function () { cat.classList.add('is-popped'); }, 450 + 2000 + 700 + 900);
+        setTimeout(function () { cat.classList.add('is-popped'); }, 450 + 2000 + 5000 + 900);
         // Whole composition (bouquet + text) starts floating after the pop settles
-        setTimeout(function () { stage.classList.add('is-floating'); }, 450 + 2000 + 700 + 1100);
+        setTimeout(function () { stage.classList.add('is-floating'); }, 450 + 2000 + 5000 + 1100);
         // Gently fade the button once the bouquet is delivered
-        setTimeout(function () { cta.classList.add('is-delivered'); }, 450 + 2000 + 1800);
+        setTimeout(function () { cta.classList.add('is-delivered'); }, 450 + 2000 + 5000 + 1100);
       }
     });
 
