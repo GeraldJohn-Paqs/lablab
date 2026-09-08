@@ -418,6 +418,126 @@
   }
   .letter-close:hover { color: #6b5b4f; }
 
+  /* ───── Music player widget (lower right corner) ───── */
+  .music-player {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px 8px 12px;
+    background: rgba(255, 252, 248, 0.92);
+    border: 1px solid rgba(200, 170, 160, 0.28);
+    border-radius: 999px;
+    box-shadow: 0 8px 28px rgba(120, 80, 70, 0.18), 0 2px 6px rgba(120, 80, 70, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    max-width: calc(100vw - 44px);
+    animation: mp-enter 0.8s ease-out 0.6s both;
+  }
+  @keyframes mp-enter {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .mp-heart {
+    background: none;
+    border: none;
+    color: #c4566a;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: mp-heartbeat 1.6s ease-in-out infinite;
+  }
+  .mp-heart svg { width: 18px; height: 18px; display: block; }
+  .mp-heart.is-popped { animation: mp-heart-pop 0.5s ease; }
+  @keyframes mp-heartbeat {
+    0%, 60%, 100% { transform: scale(1); }
+    30% { transform: scale(1.18); }
+  }
+  @keyframes mp-heart-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.45); }
+    100% { transform: scale(1); }
+  }
+  .mp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 110px;
+  }
+  .mp-title {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #6b5b4f;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .mp-progress {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .mp-progress-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(180, 150, 140, 0.32);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .mp-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #e8a0a0, #c4566a);
+    border-radius: 2px;
+    transition: width 0.12s linear;
+  }
+  .mp-play {
+    background: linear-gradient(135deg, #f0b8c0, #e89098);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 3px 10px rgba(196, 86, 106, 0.4);
+    padding: 0;
+  }
+  .mp-play:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(196, 86, 106, 0.5); }
+  .mp-play:active { transform: scale(0.94); }
+  .mp-play svg { width: 16px; height: 16px; display: block; }
+  .mp-play .mp-icon-pause { display: none; }
+  .mp-play.is-playing .mp-icon-play { display: none; }
+  .mp-play.is-playing .mp-icon-pause { display: block; }
+  .mp-volume {
+    background: none;
+    border: none;
+    color: #a09080;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+  .mp-volume:hover { color: #6b5b4f; }
+  .mp-volume svg { width: 18px; height: 18px; display: block; }
+  .mp-volume .mp-vol-off { display: none; }
+  .mp-volume.is-muted { color: #c4a8a0; }
+  .mp-volume.is-muted .mp-vol-on { display: none; }
+  .mp-volume.is-muted .mp-vol-off { display: block; }
+
   /* ───── PHONE (< 640px): stacked, letter as centered modal ───── */
   @media (max-width: 639px) {
     .bouquet { width: clamp(280px, 90vw, 400px); }
@@ -549,6 +669,29 @@
       <p id="msg2">“…so I brought you here instead.”</p>
     </div>
   </main>
+
+  <div class="music-player" id="musicPlayer" aria-label="Our song music player">
+    <button class="mp-heart" id="mpHeart" type="button" aria-label="Heart">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </button>
+    <div class="mp-info">
+      <span class="mp-title">our song</span>
+      <div class="mp-progress" id="mpProgress" role="progressbar" aria-label="Song progress">
+        <div class="mp-progress-track">
+          <div class="mp-progress-fill" id="mpProgressFill"></div>
+        </div>
+      </div>
+    </div>
+    <button class="mp-play" id="mpPlay" type="button" aria-label="Play song">
+      <svg class="mp-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="mp-icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+    </button>
+    <button class="mp-volume" id="mpVolume" type="button" aria-label="Mute">
+      <svg class="mp-vol-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      <svg class="mp-vol-off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+    </button>
+    <audio id="mpAudio" src="our-song.mp3" preload="none" loop></audio>
+  </div>
 
 <script>
   (function () {
@@ -726,6 +869,57 @@
     });
     letterClose.addEventListener('click', function () {
       if (letterOpen) toggleLetter();
+    });
+
+    // ───── Music player ─────
+    const mpAudio = document.getElementById('mpAudio');
+    const mpPlay = document.getElementById('mpPlay');
+    const mpProgress = document.getElementById('mpProgress');
+    const mpProgressFill = document.getElementById('mpProgressFill');
+    const mpVolume = document.getElementById('mpVolume');
+    const mpHeart = document.getElementById('mpHeart');
+
+    mpPlay.addEventListener('click', function () {
+      if (mpAudio.paused) {
+        const p = mpAudio.play();
+        if (p && p.catch) p.catch(function () { /* file missing or autoplay blocked */ });
+      } else {
+        mpAudio.pause();
+      }
+    });
+
+    mpAudio.addEventListener('play', function () { mpPlay.classList.add('is-playing'); });
+    mpAudio.addEventListener('pause', function () { mpPlay.classList.remove('is-playing'); });
+    mpAudio.addEventListener('timeupdate', function () {
+      if (mpAudio.duration && isFinite(mpAudio.duration)) {
+        mpProgressFill.style.width = ((mpAudio.currentTime / mpAudio.duration) * 100) + '%';
+      }
+    });
+    mpAudio.addEventListener('ended', function () {
+      mpPlay.classList.remove('is-playing');
+      mpProgressFill.style.width = '0%';
+    });
+    // When metadata loads, make sure the bar is at 0
+    mpAudio.addEventListener('loadedmetadata', function () {
+      mpProgressFill.style.width = '0%';
+    });
+
+    mpProgress.addEventListener('click', function (e) {
+      if (!mpAudio.duration || !isFinite(mpAudio.duration)) return;
+      const rect = mpProgress.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      mpAudio.currentTime = pct * mpAudio.duration;
+    });
+
+    mpVolume.addEventListener('click', function () {
+      mpAudio.muted = !mpAudio.muted;
+      mpVolume.classList.toggle('is-muted', mpAudio.muted);
+    });
+
+    mpHeart.addEventListener('click', function () {
+      mpHeart.classList.remove('is-popped');
+      void mpHeart.offsetWidth;
+      mpHeart.classList.add('is-popped');
     });
   })();
 </script>
