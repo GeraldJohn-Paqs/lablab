@@ -921,6 +921,49 @@
       void mpHeart.offsetWidth;
       mpHeart.classList.add('is-popped');
     });
+
+    // ───── Auto-play with gentle fade-in ─────
+    // Most browsers block unmuted autoplay on page load. We:
+    //  (1) try once on load (silent if blocked), and
+    //  (2) start the song on the FIRST user interaction anywhere
+    //      (click / tap / key) — which is guaranteed because the page
+    //      requires a click on "click here" to begin the experience.
+    // The volume fades in from 0 to ~1 over ~1.25s so it never feels abrupt.
+    var _fadeId = null;
+    function playWithFade() {
+      var target = (typeof mpAudio.volume === 'number' && mpAudio.volume > 0)
+        ? mpAudio.volume : 1;
+      try { mpAudio.volume = 0; } catch (e) {}
+      var p = null;
+      try { p = mpAudio.play(); } catch (e) { p = null; }
+      if (p && p.catch) p.catch(function () { /* blocked or file missing */ });
+      if (_fadeId) clearInterval(_fadeId);
+      var v = 0;
+      _fadeId = setInterval(function () {
+        v = Math.min(target, v + 0.04);
+        try { mpAudio.volume = v; } catch (e) {}
+        if (v >= target - 0.001) {
+          clearInterval(_fadeId); _fadeId = null;
+          try { mpAudio.volume = target; } catch (e) {}
+        }
+      }, 50);
+    }
+
+    // (1) attempt autoplay on load — silently fails if blocked
+    playWithFade();
+
+    // (2) reliable fallback: first interaction anywhere unlocks audio
+    function firstTouchPlay() {
+      playWithFade();
+      document.removeEventListener('click', firstTouchPlay, true);
+      document.removeEventListener('pointerdown', firstTouchPlay, true);
+      document.removeEventListener('touchstart', firstTouchPlay, true);
+      document.removeEventListener('keydown', firstTouchPlay, true);
+    }
+    document.addEventListener('click', firstTouchPlay, true);
+    document.addEventListener('pointerdown', firstTouchPlay, true);
+    document.addEventListener('touchstart', firstTouchPlay, true);
+    document.addEventListener('keydown', firstTouchPlay, true);
   })();
 </script>
 </body>
