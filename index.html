@@ -340,6 +340,40 @@
     50%      { transform: rotate(2deg) translateY(-6px); }
   }
 
+  /* "Tap the envelope" hint below the bouquet */
+  .hint {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    margin-top: 18px;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(1.2rem, 3.2vw, 1.6rem);
+    color: #8a2f2f;
+    white-space: nowrap;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+  .hint.is-visible {
+    opacity: 1;
+    animation: hint-bob 1.8s ease-in-out infinite;
+  }
+  .hint-arrow {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4em;
+    line-height: 1;
+    margin-bottom: 2px;
+    color: #b04050;
+  }
+  @keyframes hint-bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(-6px); }
+  }
+
   /* Envelope click target on the bouquet */
   .envelope-target {
     position: absolute;
@@ -637,6 +671,7 @@
         <img class="cat" id="cat" src="cutecute.png" alt="A cute cat">
       </div>
     </div>
+    <div class="hint" id="hint" aria-hidden="true"><span class="hint-arrow" aria-hidden="true">↑</span>Tap the envelope</div>
   </div>
 
   <div class="letter" id="letter" role="dialog" aria-modal="false" aria-label="A letter for you" aria-hidden="true">
@@ -746,6 +781,7 @@
     const cat = document.getElementById('cat');
     const content = document.querySelector('.content');
     const envelopeTarget = document.getElementById('envelopeTarget');
+    const hint = document.getElementById('hint');
     const letter = document.getElementById('letter');
     const letterClose = document.getElementById('letterClose');
     let letterOpen = false;
@@ -834,6 +870,8 @@
           content.classList.add('is-removed');
           // Petal burst from the center of the viewport (where the bouquet is)
           spawnPetalBurst(window.innerWidth / 2, window.innerHeight / 2);
+          // Show the "tap the envelope" hint
+          hint.classList.add('is-visible');
         }, 450 + 2000 + 5000);
         // Floating note joins after the pop
         setTimeout(function () { floater.classList.add('is-floating'); }, 450 + 2000 + 5000 + 380);
@@ -857,6 +895,8 @@
       if (letterOpen) {
         letter.classList.add('is-visible');
         letter.setAttribute('aria-hidden', 'false');
+        // hide the hint once the letter is opened
+        hint.classList.remove('is-visible');
       } else {
         letter.classList.remove('is-visible');
         letter.setAttribute('aria-hidden', 'true');
