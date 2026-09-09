@@ -1097,7 +1097,37 @@
       mpHeart.classList.add('is-popped');
     });
 
-    // ───── Auto-play at full volume ─────
+    // ───── Force-center the hint on phone (bulletproof against WebView quirks) ─────
+    function centerHint() {
+      if (!hint) return;
+      // Pin the hint to absolute and measure
+      hint.style.position = 'absolute';
+      hint.style.transform = 'none';
+      hint.style.width = 'auto';
+      hint.style.textAlign = 'center';
+      hint.style.left = '0px';
+      hint.style.right = '0px';
+      // Now measure and set the actual left so it's perfectly centered in the stage
+      const stageRect = stage.getBoundingClientRect();
+      const hintRect = hint.getBoundingClientRect();
+      // hint is positioned relative to the stage, so left is stage-relative
+      const leftWithinStage = (stageRect.width - hintRect.width) / 2;
+      hint.style.left = leftWithinStage + 'px';
+      hint.style.right = 'auto';
+      hint.style.width = hintRect.width + 'px';
+    }
+    // Re-center on resize
+    window.addEventListener('resize', centerHint);
+    // Re-center the moment the hint becomes visible
+    const hintObserver = new MutationObserver(function () {
+      if (hint.classList.contains('is-visible')) {
+        // Run twice: once now, once after the bob animation settles the font
+        centerHint();
+        setTimeout(centerHint, 50);
+        setTimeout(centerHint, 400);
+      }
+    });
+    if (hint) hintObserver.observe(hint, { attributes: true, attributeFilter: ['class'] });
     // Most browsers block unmuted autoplay on page load. We:
     //  (1) try once on load (silent if blocked), and
     //  (2) start the song at full volume on the FIRST user interaction
