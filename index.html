@@ -611,13 +611,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       width: 100vw;
       min-height: 100vh;
-      padding: 2vh 0 14vh 0;
+      padding: 2vh 0 16vh 0;
       box-sizing: border-box;
       transform: scale(0.1) rotate(-14deg);
       opacity: 0;
+      gap: 14px;
     }
     .stage.is-popped .stage-inner {
       animation: pop-in 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -633,8 +634,8 @@
       display: block;
       width: clamp(360px, 100vw, 720px);
       height: auto;
-      filter: drop-shadow(0 28px 40px rgba(140, 50, 50, 0.28))
-              drop-shadow(0 8px 12px rgba(140, 50, 50, 0.16));
+      filter: drop-shadow(0 32px 48px rgba(140, 50, 50, 0.32))
+              drop-shadow(0 10px 16px rgba(140, 50, 50, 0.18));
     }
     .side {
       position: relative;
@@ -646,19 +647,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .floater {
-      font-size: clamp(2rem, 7vw, 2.6rem);
+      font-size: clamp(1.8rem, 6.5vw, 2.4rem);
       line-height: 1.1;
       text-align: center;
     }
     .cat {
       display: block;
-      width: clamp(240px, 78vw, 440px);
+      width: clamp(150px, 45vw, 260px);
       height: auto;
-      border-radius: 16px;
-      box-shadow: 0 8px 22px rgba(120, 60, 60, 0.18);
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(120, 60, 60, 0.18);
       border: 2px solid rgba(255, 250, 245, 0.75);
       transform: rotate(2deg);
       opacity: 0;
