@@ -591,16 +591,14 @@
   .mp-volume.is-muted .mp-vol-on { display: none; }
   .mp-volume.is-muted .mp-vol-off { display: block; }
 
-  /* ───── PHONE (< 1024px): flex column stage-inner fills the viewport,
-     side stack at the top, bouquet in the middle, hint at the bottom. ───── */
+  /* ───── PHONE (< 1024px): stage centered in viewport, side above the bouquet,
+     hint below it. Bouquet fills the width, cat is a smaller accent. ───── */
   @media (max-width: 1023px) {
     .stage {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      transform: none;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       z-index: 10;
       opacity: 0;
       pointer-events: none;
@@ -608,27 +606,15 @@
     .stage.is-popped { opacity: 1; pointer-events: auto; }
     .stage-inner {
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100vw;
-      min-height: 100vh;
-      padding: 2vh 0 16vh 0;
-      box-sizing: border-box;
+      display: inline-block;
       transform: scale(0.1) rotate(-14deg);
       opacity: 0;
-      gap: 14px;
     }
     .stage.is-popped .stage-inner {
       animation: pop-in 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
     .stage.is-floating .stage-inner {
       animation: float-bob 4.8s ease-in-out infinite;
-    }
-    .bouquet-wrap {
-      position: relative;
-      display: inline-block;
     }
     .bouquet {
       display: block;
@@ -638,16 +624,15 @@
               drop-shadow(0 10px 16px rgba(140, 50, 50, 0.18));
     }
     .side {
-      position: relative;
-      left: auto;
+      position: absolute;
+      left: 50%;
       top: auto;
-      bottom: auto;
-      transform: none;
-      margin: 0;
+      bottom: calc(100% + 18px);
+      transform: translateX(-50%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     .floater {
       font-size: clamp(1.8rem, 6.5vw, 2.4rem);
@@ -665,13 +650,11 @@
       opacity: 0;
     }
     .hint {
-      position: relative;
-      left: auto;
-      top: auto;
-      transform: none;
-      align-self: center;
-      width: 100%;
-      margin: 0;
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      margin-top: 18px;
       font-family: 'Caveat', cursive;
       font-weight: 700;
       font-size: clamp(1.3rem, 4.2vw, 1.7rem);
@@ -746,16 +729,14 @@
 
   <div class="stage" id="stage" aria-hidden="true">
     <div class="stage-inner">
+      <img class="bouquet" src="rose-bouquet.png" alt="A bouquet of red roses">
+      <div class="envelope-target" id="envelopeTarget" role="button" tabindex="0" aria-label="Open the letter"></div>
       <div class="side">
         <div class="floater" id="floater">Fl0WeRs 4 U L0V3<br>ekSzdi!’’</div>
         <img class="cat" id="cat" src="cutecute.png" alt="A cute cat">
       </div>
-      <div class="bouquet-wrap">
-        <img class="bouquet" src="rose-bouquet.png" alt="A bouquet of red roses">
-        <div class="envelope-target" id="envelopeTarget" role="button" tabindex="0" aria-label="Open the letter"></div>
-      </div>
-      <div class="hint" id="hint" aria-hidden="true"><span class="hint-arrow" aria-hidden="true">↑</span>Tap the envelope</div>
     </div>
+    <div class="hint" id="hint" aria-hidden="true"><span class="hint-arrow" aria-hidden="true">↑</span>Tap the envelope</div>
   </div>
 
   <div class="letter" id="letter" role="dialog" aria-modal="false" aria-label="A letter for you" aria-hidden="true">
@@ -1112,31 +1093,17 @@
       mpHeart.classList.add('is-popped');
     });
 
-    // ───── Auto-play with gentle fade-in ─────
+    // ───── Auto-play at full volume ─────
     // Most browsers block unmuted autoplay on page load. We:
     //  (1) try once on load (silent if blocked), and
-    //  (2) start the song on the FIRST user interaction anywhere
-    //      (click / tap / key) — which is guaranteed because the page
+    //  (2) start the song at full volume on the FIRST user interaction
+    //      anywhere (click / tap / key) — guaranteed because the page
     //      requires a click on "click here" to begin the experience.
-    // The volume fades in from 0 to ~1 over ~1.25s so it never feels abrupt.
-    var _fadeId = null;
     function playWithFade() {
-      var target = (typeof mpAudio.volume === 'number' && mpAudio.volume > 0)
-        ? mpAudio.volume : 1;
-      try { mpAudio.volume = 0; } catch (e) {}
+      try { mpAudio.volume = 1; } catch (e) {}
       var p = null;
       try { p = mpAudio.play(); } catch (e) { p = null; }
       if (p && p.catch) p.catch(function () { /* blocked or file missing */ });
-      if (_fadeId) clearInterval(_fadeId);
-      var v = 0;
-      _fadeId = setInterval(function () {
-        v = Math.min(target, v + 0.04);
-        try { mpAudio.volume = v; } catch (e) {}
-        if (v >= target - 0.001) {
-          clearInterval(_fadeId); _fadeId = null;
-          try { mpAudio.volume = target; } catch (e) {}
-        }
-      }, 50);
     }
 
     // (1) attempt autoplay on load — silently fails if blocked
