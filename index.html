@@ -591,22 +591,89 @@
   .mp-volume.is-muted .mp-vol-on { display: none; }
   .mp-volume.is-muted .mp-vol-off { display: block; }
 
-  /* ───── PHONE (< 1024px): bouquet fills the screen, side stack sits tightly above ───── */
+  /* ───── PHONE (< 1024px): flex column stage-inner fills the viewport,
+     side stack at the top, bouquet in the middle, hint at the bottom. ───── */
   @media (max-width: 1023px) {
-    .bouquet { width: clamp(360px, 100vw, 720px); }
+    .stage {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .stage.is-popped { opacity: 1; pointer-events: auto; }
+    .stage-inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding: 3vh 0;
+      box-sizing: border-box;
+      transform: scale(0.1) rotate(-14deg);
+      opacity: 0;
+    }
+    .stage.is-popped .stage-inner {
+      animation: pop-in 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .stage.is-floating .stage-inner {
+      animation: float-bob 4.8s ease-in-out infinite;
+    }
+    .bouquet-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .bouquet {
+      display: block;
+      width: clamp(360px, 100vw, 720px);
+      height: auto;
+      filter: drop-shadow(0 28px 40px rgba(140, 50, 50, 0.28))
+              drop-shadow(0 8px 12px rgba(140, 50, 50, 0.16));
+    }
     .side {
-      left: 50%;
+      position: relative;
+      left: auto;
       top: auto;
-      bottom: calc(100% + 18px);
-      transform: translateX(-50%);
+      bottom: auto;
+      transform: none;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 12px;
     }
-    .floater { font-size: clamp(2rem, 7vw, 2.6rem); text-align: center; line-height: 1.1; }
-    .cat { width: clamp(240px, 78vw, 420px); border-width: 2px; border-radius: 16px; }
+    .floater {
+      font-size: clamp(2rem, 7vw, 2.6rem);
+      line-height: 1.1;
+      text-align: center;
+    }
+    .cat {
+      display: block;
+      width: clamp(240px, 72vw, 420px);
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 22px rgba(120, 60, 60, 0.18);
+      border: 2px solid rgba(255, 250, 245, 0.75);
+      transform: rotate(2deg);
+      opacity: 0;
+    }
     .hint {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
+      margin: 0;
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
       font-size: clamp(1.3rem, 4.2vw, 1.7rem);
-      margin-top: 22px;
+      color: #8a2f2f;
+      white-space: nowrap;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
     }
     .letter {
       right: auto;
@@ -672,14 +739,16 @@
 
   <div class="stage" id="stage" aria-hidden="true">
     <div class="stage-inner">
-      <img class="bouquet" src="rose-bouquet.png" alt="A bouquet of red roses">
-      <div class="envelope-target" id="envelopeTarget" role="button" tabindex="0" aria-label="Open the letter"></div>
       <div class="side">
         <div class="floater" id="floater">Fl0WeRs 4 U L0V3<br>ekSzdi!’’</div>
         <img class="cat" id="cat" src="cutecute.png" alt="A cute cat">
       </div>
+      <div class="bouquet-wrap">
+        <img class="bouquet" src="rose-bouquet.png" alt="A bouquet of red roses">
+        <div class="envelope-target" id="envelopeTarget" role="button" tabindex="0" aria-label="Open the letter"></div>
+      </div>
+      <div class="hint" id="hint" aria-hidden="true"><span class="hint-arrow" aria-hidden="true">↑</span>Tap the envelope</div>
     </div>
-    <div class="hint" id="hint" aria-hidden="true"><span class="hint-arrow" aria-hidden="true">↑</span>Tap the envelope</div>
   </div>
 
   <div class="letter" id="letter" role="dialog" aria-modal="false" aria-label="A letter for you" aria-hidden="true">
