@@ -591,19 +591,23 @@
   .mp-volume.is-muted .mp-vol-on { display: none; }
   .mp-volume.is-muted .mp-vol-off { display: block; }
 
-  /* ───── PHONE (< 640px): stacked, letter as centered modal ───── */
+  /* ───── PHONE (< 1024px): bouquet fills the screen, side stack sits tightly above ───── */
   @media (max-width: 1023px) {
-    .bouquet { width: clamp(360px, 98vw, 580px); }
+    .bouquet { width: clamp(360px, 100vw, 720px); }
     .side {
       left: 50%;
       top: auto;
-      bottom: calc(100% + 14px);
+      bottom: calc(100% + 18px);
       transform: translateX(-50%);
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
-    .floater { font-size: 1.8rem; text-align: center; }
-    .cat { width: clamp(200px, 62vw, 320px); border-width: 2px; }
+    .floater { font-size: clamp(2rem, 7vw, 2.6rem); text-align: center; line-height: 1.1; }
+    .cat { width: clamp(240px, 78vw, 420px); border-width: 2px; border-radius: 16px; }
+    .hint {
+      font-size: clamp(1.3rem, 4.2vw, 1.7rem);
+      margin-top: 22px;
+    }
     .letter {
       right: auto;
       left: 50%;
